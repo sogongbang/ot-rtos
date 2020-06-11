@@ -55,8 +55,14 @@
 #define HTTP_BIT (1 << 2)
 #define BUTTON_BIT (1 << 3)
 
+#if defined(USE_ALT_TRACE_PIN)
+#define BUTTON1_PIN (32 + 7)
+#define BUTTON2_PIN (32 + 8)
+#else
 #define BUTTON1_PIN 11
 #define BUTTON2_PIN 12
+#endif
+
 #define LED1_PIN 13
 #define GPIO_PRIORITY 6
 
