@@ -48,7 +48,7 @@
 #include "net/utils/nat64_utils.h"
 
 #ifndef DEMO_PASSPHRASE
-#define DEMO_PASSPHRASE "ABCDEF"
+#define DEMO_PASSPHRASE "J01NME"
 #endif
 
 #define COMMISSION_BIT (1 << 1)
@@ -174,7 +174,7 @@ void demo101Task(void *p)
         uint32_t notifyValue;
 
         httpc_state_t *connection;
-        httpc_get_file(&serverAddr, 80, "/", &httpSettings, HttpRecvCallback, NULL, &connection);
+        httpc_get_file2(&serverAddr, "www.google.com", 80, "/", &httpSettings, HttpRecvCallback, NULL, &connection);
         WaitForSignal(HTTP_BIT);
         if (xTaskNotifyWait(BUTTON_BIT, BUTTON_BIT, &notifyValue, pdMS_TO_TICKS(10000)) == pdTRUE)
         {

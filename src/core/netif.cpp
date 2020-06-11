@@ -36,6 +36,7 @@
 #include <lwip/tcpip.h>
 #include <lwip/udp.h>
 #include <semphr.h>
+#include <assert.h>
 
 #include <openthread/icmp6.h>
 #include <openthread/ip6.h>
@@ -207,11 +208,13 @@ static void delMulticastAddress(const otIp6Address &aAddress)
 
 static void delAddress(const otIp6Address &aAddress)
 {
+    otError error = OT_ERROR_NONE;
     int8_t index;
+    (void)error;
 
     LOCK_TCPIP_CORE();
     index = netif_get_ip6_addr_match(&sNetif, reinterpret_cast<const ip6_addr_t *>(&aAddress));
-    VerifyOrExit(index != -1);
+    VerifyOrExit(index != -1, error = OT_ERROR_FAILED);
     netif_ip6_addr_set_state(&sNetif, index, IP6_ADDR_INVALID);
 
 exit:
@@ -342,7 +345,7 @@ static void processTransmit(otInstance *aInstance)
     otError    error   = OT_ERROR_NONE;
     otMessage *message = NULL;
 
-    VerifyOrExit(sHeadOutput != NULL);
+    VerifyOrExit(sHeadOutput != NULL, error = OT_ERROR_FAILED);
 
     message = otIp6NewMessage(aInstance, NULL);
     VerifyOrExit(message != NULL, error = OT_ERROR_NO_BUFS);
