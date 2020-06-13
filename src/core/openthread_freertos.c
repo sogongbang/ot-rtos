@@ -89,7 +89,9 @@ static void mainloop(void *aContext)
 void otrTaskNotifyGive()
 {
 #if !PLATFORM_linux // linux use select rather than event notification
-    xTaskNotifyGive(sMainTask);
+    if (sMainTask != NULL) {
+        xTaskNotifyGive(sMainTask);
+    }
 #endif
 }
 
@@ -98,7 +100,9 @@ void otrTaskNotifyGiveFromISR()
 #if !PLATFORM_linux // linux use select rather than event notification
     BaseType_t taskWoken;
 
-    vTaskNotifyGiveFromISR(sMainTask, &taskWoken);
+    if (sMainTask != NULL) {
+        vTaskNotifyGiveFromISR(sMainTask, &taskWoken);
+    }
 #endif
 }
 

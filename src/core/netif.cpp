@@ -345,26 +345,24 @@ static void processTransmit(otInstance *aInstance)
     otError    error   = OT_ERROR_NONE;
     otMessage *message = NULL;
 
-    VerifyOrExit(sHeadOutput != NULL, error = OT_ERROR_FAILED);
-
-    message = otIp6NewMessage(aInstance, NULL);
-    VerifyOrExit(message != NULL, error = OT_ERROR_NO_BUFS);
-
-    SuccessOrExit(error = otMessageAppend(message, sHeadOutput->mData, sHeadOutput->mLength));
-
-    error   = otIp6Send(aInstance, message);
-    message = NULL;
-
-    {
-        OutputEvent *nextEvent = sHeadOutput->mNext;
-
-        free(sHeadOutput);
-        sHeadOutput = nextEvent;
-    }
-
-    // Notify if more
     if (sHeadOutput != NULL)
     {
+        message = otIp6NewMessage(aInstance, NULL);
+        VerifyOrExit(message != NULL, error = OT_ERROR_NO_BUFS);
+
+        SuccessOrExit(error = otMessageAppend(message, sHeadOutput->mData, sHeadOutput->mLength));
+
+        error   = otIp6Send(aInstance, message);
+        message = NULL;
+
+        {
+            OutputEvent *nextEvent = sHeadOutput->mNext;
+
+            free(sHeadOutput);
+            sHeadOutput = nextEvent;
+        }
+
+        // Notify if more
         otrTaskNotifyGive();
     }
     else

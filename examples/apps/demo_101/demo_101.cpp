@@ -66,6 +66,8 @@
 #define LED1_PIN 13
 #define GPIO_PRIORITY 6
 
+#define SERVER_DOMAIN_NAME "www.google.com"
+
 static TaskHandle_t sDemoTask;
 
 static void setupNat64(void)
@@ -120,7 +122,10 @@ static err_t HttpHeaderCallback(httpc_state_t *aConn,
     (void)aArg;
     (void)aHdr;
 
-    printf("Hdr len %d, content len %d\n", aLen, aContentLen);
+    printf("Get data payload len %d\n", aHdr->tot_len);
+    printf("    Hdr len %d, content len %d\n", aLen, aContentLen);
+
+    return ERR_OK;
 }
 
 static err_t HttpRecvCallback(void *aArg, struct altcp_pcb *conn, struct pbuf *p, err_t err)
@@ -169,9 +174,9 @@ void demo101Task(void *p)
     // wait a while for thread to connect
     vTaskDelay(pdMS_TO_TICKS(2000));
 
-    // dns64 www.google.com
-    printf("Start curl www.google.com\n");
-    dnsNat64Address("www.google.com", &serverAddr.u_addr.ip6);
+    // dns64 SERVER_DOMAIN_NAME
+    printf("Start curl %s\n", SERVER_DOMAIN_NAME);
+    dnsNat64Address(SERVER_DOMAIN_NAME, &serverAddr.u_addr.ip6);
     serverAddr.type = IPADDR_TYPE_V6;
 
     // periodically curl www.google.com
@@ -180,7 +185,7 @@ void demo101Task(void *p)
         uint32_t notifyValue;
 
         httpc_state_t *connection;
-        httpc_get_file2(&serverAddr, "www.google.com", 80, "/", &httpSettings, HttpRecvCallback, NULL, &connection);
+        httpc_get_file2(&serverAddr, SERVER_DOMAIN_NAME, 80, "/", &httpSettings, HttpRecvCallback, NULL, &connection);
         WaitForSignal(HTTP_BIT);
         if (xTaskNotifyWait(BUTTON_BIT, BUTTON_BIT, &notifyValue, pdMS_TO_TICKS(10000)) == pdTRUE)
         {
