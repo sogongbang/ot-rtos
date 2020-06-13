@@ -48,7 +48,7 @@ static otError parseLong(char *argv, long *aValue)
     return (*endptr == '\0') ? OT_ERROR_NONE : OT_ERROR_PARSE;
 }
 
-static void ProcessTest(int argc, char *argv[])
+static void ProcessTest(uint8_t argc, char *argv[])
 {
     if (argc < 1)
     {
@@ -79,7 +79,7 @@ static void ProcessTest(int argc, char *argv[])
     }
 }
 
-static void ProcessEchoServer(int argc, char *argv[])
+static void ProcessEchoServer(uint8_t argc, char *argv[])
 {
     long port;
 
@@ -102,7 +102,7 @@ static void ProcessEchoServer(int argc, char *argv[])
     }
 }
 
-static void ProcessConnect(int argc, char *argv[])
+static void ProcessConnect(uint8_t argc, char *argv[])
 {
     long port;
 
@@ -125,7 +125,7 @@ static void ProcessConnect(int argc, char *argv[])
     }
 }
 
-static void ProcessDisconnect(int argc, char *argv[])
+static void ProcessDisconnect(uint8_t argc, char *argv[])
 {
     UNUSED_VARIABLE(argc);
     UNUSED_VARIABLE(argv);
@@ -139,7 +139,7 @@ static void ProcessDisconnect(int argc, char *argv[])
 
 bool startTcpSend(otInstance *aInstance, uint32_t count, uint32_t size);
 
-static void ProcessSend(int argc, char *argv[])
+static void ProcessSend(uint8_t argc, char *argv[])
 {
     long count;
     long size;

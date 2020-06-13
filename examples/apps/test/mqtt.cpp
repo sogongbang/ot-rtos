@@ -70,6 +70,15 @@ static const unsigned long kMaxConnectIntervalMillis         = 6000L;
 static const unsigned long kMaxConnectRetryTimeElapsedMillis = 900000L;
 static const float         kIntervalMultiplier               = 1.5f;
 
+static void setupNat64(void)
+{
+    ip6_addr_t nat64Prefix;
+
+    nat64Prefix.zone = 0;
+    inet_pton(AF_INET6, "64:ff9b::", nat64Prefix.addr);
+    setNat64Prefix(&nat64Prefix);
+}
+
 static void GetIatExp(char *aIat, char *aExt, int time_size)
 {
     time_t now_seconds = timeNtp();
@@ -317,6 +326,10 @@ void mqttTask(void *p)
     GoogleCloudIotClientCfg *cfg = static_cast<GoogleCloudIotClientCfg *>(p);
     char                     subTopic[GoogleCloudIotMqttClient::kTopicDataMaxLength];
     int                      temperature = 0;
+
+    setupNat64();
+    // wait a while for thread to connect
+    vTaskDelay(pdMS_TO_TICKS(2000));
 
     ot::app::GoogleCloudIotMqttClient client(*cfg);
 
